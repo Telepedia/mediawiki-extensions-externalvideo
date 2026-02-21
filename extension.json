@@ -1,85 +1,86 @@
 {
-  "name": "ExternalVideo",
-  "version": "0.0.0-alpha",
-  "author": [
-    "Telepedia Ltd."
-  ],
-  "url": "https://github.com/telepedia/externalvideo",
-  "descriptionmsg": "externalvideo-desc",
-  "license-name": "Apache-2.0",
-  "type": "other",
-  "requires": {
-    "MediaWiki": ">= 1.43.0",
-    "platform": {
-      "php": ">= 8.0"
-    }
-  },
-  "AutoloadNamespaces": {
-    "Telepedia\\Extensions\\ExternalVideo\\": "includes"
-  },
-  "MessagesDirs": {
-    "ExternalVideo": [
-      "i18n"
-    ]
-  },
-  "ResourceFileModulePaths": {
-    "localBasePath": "resources",
-    "remoteExtPath": ""
-  },
-  "ResourceModules": {
-    "ext.externalvideo.scripts": {
-      "class": "MediaWiki\\ResourceLoader\\CodexModule",
-      "dependencies": [
-        "vue",
-        "mediawiki.user"
-      ],
-      "packageFiles": [
-        "ext.externalvideo.scripts/init.js",
-        "ext.externalvideo.scripts/App.vue"
-      ],
-      "codexComponents": [
-        "CdxDialog",
-        "CdxField",
-        "CdxTextInput"
-      ],
-      "messages": [
-        "externalvideo-added",
-        "externalvideo-error"
-      ]
-    },
-    "ext.externalvideo.styles": {
-      "styles": [
-        "ext.externalvideo.styles/index.less"
-      ]
-    }
-  },
-  "HookHandlers": {
-    "special": {
-      "class": "Telepedia\\Extensions\\ExternalVideo\\Hooks\\SpecialHandler"
-    }
-  },
-  "Hooks": {
-    "SkinTemplateNavigation::Universal": "special",
-    "BeforePageDisplay": "special"
-  },
-  "MediaHandlers": {
-    "video/youtube": "Telepedia\\Extensions\\ExternalVideo\\Handlers\\ExternalVideoHandler"
-  },
-  "RestRoutes": [
-    {
-      "path": "/externalvideo/v0/video",
-      "method": [
-        "POST"
-      ],
-      "class": "Telepedia\\Extensions\\ExternalVideo\\Rest\\AddVideoHandler",
-      "services": [
-        "ExternalVideo.ExternalVideoFactory",
-        "ExternalVideo.ExternalVideoStore"
-      ]
-    }
-  ],
-  "ServiceWiringFiles": [
-    "includes/ServiceWiring.php"
-  ],
-  "manifest_version": 2
+	"name": "ExternalVideo",
+	"version": "0.0.0-alpha",
+	"author": [
+		"Telepedia Ltd."
+	],
+	"url": "https://github.com/telepedia/externalvideo",
+	"descriptionmsg": "externalvideo-desc",
+	"license-name": "Apache-2.0",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.43.0",
+		"platform": {
+			"php": ">= 8.0",
+			"ext-imagick": "*"
+		}
+	},
+	"AutoloadNamespaces": {
+		"Telepedia\\Extensions\\ExternalVideo\\": "includes"
+	},
+	"MessagesDirs": {
+		"ExternalVideo": [
+			"i18n"
+		]
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": ""
+	},
+	"ResourceModules": {
+		"ext.externalvideo.scripts": {
+			"class": "MediaWiki\\ResourceLoader\\CodexModule",
+			"dependencies": [
+				"vue",
+				"mediawiki.user"
+			],
+			"packageFiles": [
+				"ext.externalvideo.scripts/init.js",
+				"ext.externalvideo.scripts/App.vue"
+			],
+			"codexComponents": [
+				"CdxDialog",
+				"CdxField",
+				"CdxTextInput"
+			],
+			"messages": [
+				"externalvideo-added",
+				"externalvideo-error"
+			]
+		},
+		"ext.externalvideo.styles": {
+			"styles": [
+				"ext.externalvideo.styles/index.less"
+			]
+		}
+	},
+	"HookHandlers": {
+		"special": {
+			"class": "Telepedia\\Extensions\\ExternalVideo\\Hooks\\SpecialHandler"
+		}
+	},
+	"Hooks": {
+		"SkinTemplateNavigation::Universal": "special",
+		"BeforePageDisplay": "special"
+	},
+	"MediaHandlers": {
+		"video/youtube": "Telepedia\\Extensions\\ExternalVideo\\Handlers\\ExternalVideoHandler"
+	},
+	"RestRoutes": [
+		{
+			"path": "/externalvideo/v0/video",
+			"method": [
+				"POST"
+			],
+			"class": "Telepedia\\Extensions\\ExternalVideo\\Rest\\AddVideoHandler",
+			"services": [
+				"ExternalVideo.ExternalVideoFactory",
+				"ExternalVideo.ExternalVideoStore"
+			]
+		}
+	],
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
+	"manifest_version": 2
 }
