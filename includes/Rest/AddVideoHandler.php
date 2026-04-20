@@ -82,7 +82,7 @@ class AddVideoHandler extends SimpleHandler {
 	/**
 	 * @inheritDoc
 	 */
-	public function validate( Validator $restValidator ) {
+	public function validate( Validator $restValidator ): void {
 		parent::validate( $restValidator );
 		$this->validateToken( false );
 	}
