@@ -130,9 +130,6 @@ class ExternalVideoHandler extends MediaHandler {
 			] );
 		}
 
-		$options[ 'width' ] = $params['width'];
-		$options[ 'height' ] = $params['height'];
-
 		$srcPath = $image->getLocalRefPath();
 
 		if ( !$srcPath || !file_exists( $srcPath ) ) {
@@ -146,12 +143,13 @@ class ExternalVideoHandler extends MediaHandler {
 			// as imagick retained the aspect ratio, ie a 120x120 would be thumbnailed to
 			// 120x90 and then MediaWiki tried to render this at 120x120 and stetched
 			// so just crop it to this for now
-			$imagick->cropThumbnailImage( $options['width'], $options['height'] );
+			$imagick->cropThumbnailImage( $params['width'], $params['height'] );
 			$imagick->setImageFormat( 'jpeg' );
 			$imagick->setImageCompressionQuality( 100 );
 			$imagick->writeImage( $dstPath );
 			$imagick->clear();
 		} catch ( Exception $e ) {
+			wfDebugLog( 'ExternalVideo', "Imagick error for video $videoId: " . $e->getMessage() );
 			return new MediaTransformError( 'externalvideo-imagick-error', $params['width'], $params['height'] );
 		}
 
