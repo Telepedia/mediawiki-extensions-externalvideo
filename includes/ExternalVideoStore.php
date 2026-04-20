@@ -22,19 +22,28 @@ class ExternalVideoStore {
 	 * Create a video from a provider and upload it to MediaWiki
 	 * @param ExternalVideoProvider $provider
 	 * @param User $user
-	 *
-	 * @return StatusValue
+	 * @return StatusValue either a fatal with the error or good with the prefixed file title string
 	 */
 	public function createFileFromProvider( ExternalVideoProvider $provider, User $user ): StatusValue {
 		$thumbUrl = $provider->getThumbnailUrl();
-		$tmpFile = sys_get_temp_dir() . 'ExternalVideo_' . uniqid() . '.jpg';
 		$thumbData = file_get_contents( $thumbUrl );
 
 		if ( $thumbData === false ) {
 			return StatusValue::newFatal( 'externalvideo-thumbnail-download-failed' );
 		}
 
-		file_put_contents( $tmpFile, $thumbData );
+		$tmpBase = tempnam( sys_get_temp_dir(), 'ExternalVideo_' );
+		if ( $tmpBase === false ) {
+			return StatusValue::newFatal( 'externalvideo-tmp-file-error' );
+		}
+
+		$tmpFile = $tmpBase . '.jpg';
+		unlink( $tmpBase );
+
+		if ( file_put_contents( $tmpFile, $thumbData ) === false ) {
+			return StatusValue::newFatal( 'externalvideo-thumbnail-download-failed' );
+		}
+
 		$title = $provider->getTitle();
 
 		$fileTitle = Title::makeTitle( NS_FILE, $title );
@@ -81,6 +90,6 @@ class ExternalVideoStore {
 			return $status;
 		}
 
-		return StatusValue::newGood();
+		return StatusValue::newGood( $fileTitle->getPrefixedText() );
 	}
 }
