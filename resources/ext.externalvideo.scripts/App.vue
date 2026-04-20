@@ -57,9 +57,12 @@ module.exports = defineComponent( {
       rest.post( `/externalvideo/v0/video`, {
         url: inputValue.value,
         token: mw.user.tokens.get( 'csrfToken' )
-      } ).then( () => {
+      } ).then( ( data ) => {
         mw.notify( mw.message( "externalvideo-added" ).text(), { type: 'success' } );
-      } ).catch( ( error ) => {
+        if ( data && data.fileUrl ) {
+          window.location.href = data.fileUrl;
+        }
+      } ).catch( () => {
         mw.notify( mw.message( "externalvideo-error" ).text(), { type: 'error' } );
       } );
     }
