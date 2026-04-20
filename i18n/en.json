@@ -4,9 +4,17 @@
 			"Telepedia Ltd."
 		]
 	},
-  "externalvideo-desc": "Embed videos from external providers natively into MediaWiki",
-  "externalvideo-add": "Add Video",
-  "externalvideo-upload-permissions":"You do not have the necessary permissions to add videos.",
-  "externalvideo-added": "Successfully added video",
-  "externalvideo-error": "An error occurred when trying to add the video"
+	"externalvideo-desc": "Embed videos from external providers natively into MediaWiki",
+	"externalvideo-add": "Add Video",
+	"externalvideo-upload-permissions": "You do not have the necessary permissions to add videos.",
+	"externalvideo-added": "Successfully added video",
+	"externalvideo-error": "An error occurred when trying to add the video",
+	"externalvideo-invalid-url": "The URL provided is not valid. Please provide a valid http or https URL.",
+	"externalvideo-provider-not-supported": "The URL provided does not match any supported video provider.",
+	"externalvideo-thumbnail-download-failed": "Failed to download the video thumbnail.",
+	"externalvideo-invalid-title": "The video title could not be used as a file name.",
+	"externalvideo-tmp-file-error": "Failed to create a temporary file for the thumbnail.",
+	"externalvideo-noid": "This file is missing its video ID metadata.",
+	"externalvideo-nosrc": "The source file for this video could not be found.",
+	"externalvideo-imagick-error": "An error occurred while processing the video thumbnail image."
 }
