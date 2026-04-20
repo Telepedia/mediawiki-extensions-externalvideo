@@ -4,6 +4,7 @@ namespace Telepedia\Extensions\ExternalVideo;
 
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Telepedia\Extensions\ExternalVideo\Providers\ExternalVideoProvider;
 use Telepedia\Extensions\ExternalVideo\Providers\YouTubeProvider;
 
@@ -49,7 +50,14 @@ class ExternalVideoFactory {
 	private function determineProvider( string $url ): ?ExternalVideoProvider {
 		// does this match a YouTube URL?
 		if ( preg_match( '#(?:youtube\.com/watch\?v=|youtu\.be/)([A-Za-z0-9_\-]+)#', $url, $m ) ) {
-			return new YouTubeProvider( $m[1] );
+			try {
+				return new YouTubeProvider( $m[1] );
+			} catch ( RuntimeException $e ) {
+				$this->logger->warning( "Failed to create YouTubeProvider: " . $e->getMessage(), [
+					'videoId' => $m[1],
+				] );
+				return null;
+			}
 		}
 
 		// @TODO: try and think of what else we can support; atp I think Twitch

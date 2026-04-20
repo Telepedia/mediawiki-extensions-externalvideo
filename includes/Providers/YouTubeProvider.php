@@ -2,6 +2,8 @@
 
 namespace Telepedia\Extensions\ExternalVideo\Providers;
 
+use RuntimeException;
+
 class YouTubeProvider extends ExternalVideoProvider {
 
 	private string $thumbnailUrl;
@@ -19,14 +21,24 @@ class YouTubeProvider extends ExternalVideoProvider {
 	/**
 	 * Helper function to set all the data onto the Provider
 	 * @return void
+	 * @throws RuntimeException if the oEmbed API request fails or returns invalid data
 	 */
 	public function setData(): void {
 		$url = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=$this->id&format=json";
 		$data = $this->httpRequestFactory->get( $url );
-		$data = json_decode( $data, true );
 
-		$this->thumbnailUrl = $data['thumbnail_url'];
-		$this->title = $data['title'];
+		if ( $data === false || $data === null ) {
+			throw new RuntimeException( "Failed to fetch oEmbed data for YouTube video: $this->id" );
+		}
+
+		$decoded = json_decode( $data, true );
+
+		if ( !is_array( $decoded ) || !isset( $decoded['thumbnail_url'], $decoded['title'] ) ) {
+			throw new RuntimeException( "Invalid oEmbed response for YouTube video: $this->id" );
+		}
+
+		$this->thumbnailUrl = $decoded['thumbnail_url'];
+		$this->title = $decoded['title'];
 	}
 
 	/**
