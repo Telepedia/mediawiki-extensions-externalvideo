@@ -65,6 +65,7 @@ class ExternalVideoHandler extends MediaHandler {
 	}
 
 	/**
+	 * Always derive height from the stored aspect ratio, ignoring any caller-supplied height.
 	 * @inheritDoc
 	 */
 	public function normaliseParams( $image, &$params ): bool {
@@ -72,14 +73,11 @@ class ExternalVideoHandler extends MediaHandler {
 			$params['width'] = 480;
 		}
 
-		$size = [
-			'width' => $image->getWidth(),
-			'height' => $image->getHeight()
-		];
-
-		if ( empty( $params['height'] ) ) {
-			$params['height'] = File::scaleHeight( $size['width'], $size['height'], $params['width'] );
-		}
+		$params['height'] = File::scaleHeight(
+			$image->getWidth(),
+			$image->getHeight(),
+			$params['width']
+		);
 
 		return true;
 	}
@@ -139,11 +137,14 @@ class ExternalVideoHandler extends MediaHandler {
 		try {
 			$imagick = new \Imagick( $srcPath );
 
-			// using ->thumbnailImage led to some distortion and stretching
-			// as imagick retained the aspect ratio, ie a 120x120 would be thumbnailed to
-			// 120x90 and then MediaWiki tried to render this at 120x120 and stetched
-			// so just crop it to this for now
-			$imagick->cropThumbnailImage( $params['width'], $params['height'] );
+			// Scale to fit within the requested dimensions while preserving aspect ratio.
+			// Using bestfit=true means Imagick won't crop or distort, it scales down
+			// in proportion. We then read the actual output dimensions back so the <img>
+			// tag matches reality instead of the (potentially square) bounding box.
+			$imagick->thumbnailImage( $params['width'], $params['height'], true );
+			$params['width'] = $imagick->getImageWidth();
+			$params['height'] = $imagick->getImageHeight();
+
 			$imagick->setImageFormat( 'jpeg' );
 			$imagick->setImageCompressionQuality( 100 );
 			$imagick->writeImage( $dstPath );
