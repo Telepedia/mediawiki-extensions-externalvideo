@@ -6,6 +6,7 @@ use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\TokenAwareHandlerTrait;
 use MediaWiki\Rest\Validator\Validator;
+use MediaWiki\Title\Title;
 use Telepedia\Extensions\ExternalVideo\ExternalVideoFactory;
 use Telepedia\Extensions\ExternalVideo\ExternalVideoStore;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -36,9 +37,10 @@ class AddVideoHandler extends SimpleHandler {
 		$data = $this->getValidatedBody();
 		$user = $this->getSession()->getUser();
 
-		if ( !filter_var( $data['url'], FILTER_VALIDATE_URL ) ) {
+		$parsed = parse_url( $data['url'] );
+		if ( !$parsed || !in_array( $parsed['scheme'] ?? '', [ 'http', 'https' ], true ) ) {
 			return $this->getResponseFactory()->createHttpError(
-				403,
+				400,
 				[ 'error' => wfMessage( 'externalvideo-invalid-url' )->text() ]
 			);
 		}
@@ -61,7 +63,13 @@ class AddVideoHandler extends SimpleHandler {
 			);
 		}
 
-		return $this->getResponseFactory()->createNoContent();
+		$fileTitle = $res->getValue();
+		$response = $this->getResponseFactory()->createJson( [
+			'fileTitle' => $fileTitle,
+			'fileUrl' => Title::newFromText( $fileTitle )->getFullURL(),
+		] );
+		$response->setStatus( 201 );
+		return $response;
 	}
 
 	/**
