@@ -14,7 +14,7 @@ use Wikimedia\FileBackend\FSFile\FSFile;
 class ExternalVideoStore {
 
 	public function __construct(
-		private readonly RepoGroup $repoGroup,
+		private readonly RepoGroup $repoGroup
 	) {
 	}
 
@@ -74,7 +74,7 @@ class ExternalVideoStore {
 		$status = $file->upload(
 			new FSFile( $tmpFile ),
 			'Added a video using ExternalProvider',
-			'',
+			'[[Category:Videos]]',
 			0,
 			$props,
 			wfTimestampNow(),
