@@ -46,7 +46,7 @@ class ExternalVideoStore {
 
 		$title = $provider->getTitle();
 
-		$fileTitle = Title::makeTitle( NS_FILE, $title );
+		$fileTitle = Title::makeTitleSafe( NS_FILE, $title );
 
 		if ( !$fileTitle ) {
 			unlink( $tmpFile );
