@@ -79,14 +79,18 @@ class YouTubeProvider extends ExternalVideoProvider {
 				"[",
 				"]",
 				"<",
-				">"
+				">",
+				"—",
+				"–"
 			],
 			[
 				"-",
 				" ",
 				" ",
 				" ",
-				" "
+				" ",
+				"-",
+				"-"
 			],
 			$this->title
 		);
