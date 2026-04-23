@@ -12,10 +12,6 @@ class YouTubeProvider extends ExternalVideoProvider {
 
 	public function __construct( private readonly string $id ) {
 		parent::__construct();
-
-		// YouTube is a bit of a funny one, we can get all the information we need from one
-		// API call
-		$this->setData();
 	}
 
 	/**
@@ -55,6 +51,9 @@ class YouTubeProvider extends ExternalVideoProvider {
 	 * @return string
 	 */
 	public function getThumbnailUrl(): string {
+		if ( !isset( $this->thumbnailUrl ) ) {
+			$this->setData();
+		}
 		return $this->thumbnailUrl;
 	}
 
@@ -73,6 +72,9 @@ class YouTubeProvider extends ExternalVideoProvider {
 	 * @return string
 	 */
 	public function getTitle(): string {
+		if ( !isset( $this->title ) ) {
+			$this->setData();
+		}
 		return str_replace(
 			[
 				'|',
